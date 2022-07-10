@@ -1,0 +1,248 @@
+package application;
+
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+
+import java.sql.*;
+
+public class KayitOlSampleController {
+
+    @FXML
+    private ResourceBundle resources;
+
+    @FXML
+    private URL location;
+
+    @FXML
+    private AnchorPane kayitol_Anchorpane;
+
+    @FXML
+    private Label lbl_kay� tol;
+
+    @FXML
+    private Label lbl_Ad;
+
+    @FXML
+    private Label lbl_kulAdi;
+
+    @FXML
+    private Label lbl_sifre;
+
+    @FXML
+    private Label lbl_sifreT;
+
+    @FXML
+    private Label lbl_dil;
+
+    @FXML
+    private TextField txt_Ad;
+
+    @FXML
+    private Label lbl_Soyad;
+
+    @FXML
+    private TextField txt_Soyad;
+
+    @FXML
+    private TextField txt_kulAdi;
+
+    @FXML
+    private TextField txt_sifre;
+
+    @FXML
+    private TextField txt_sifreTekrar;
+
+    @FXML
+    private ComboBox < String > combo1;
+
+    @FXML
+    private Button btn_kayitOl;
+
+    @FXML
+    private Button dil;
+
+    @FXML
+    private Button geri;
+
+    @FXML
+    void geri_click(ActionEvent event) {
+
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("projeSample.fxml"));
+            AnchorPane pane2 = (AnchorPane) loader.load();
+            ProjeControllerClassName nesne = loader.getController();
+            Scene scene2 = new Scene(pane2);
+            Stage stage2 = new Stage();
+            stage2.setScene(scene2);
+            Stage primaryStage = (Stage) geri.getScene().getWindow();
+            primaryStage.hide();
+
+            stage2.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    int i = 0;
+    @FXML
+    void dil_click(ActionEvent event) {
+        System.out.print(i);
+        if (i == 0) {
+            //Turkcesi Buraya
+            lbl_Ad.setText("Ad");
+            lbl_Soyad.setText("Soyad");
+            lbl_kulAdi.setText("Kullanici Ad�");
+            lbl_sifre.setText("�ifre");
+            lbl_sifreT.setText("�ifre Tekrar");
+            lbl_dil.setText("Dil");
+            btn_kayitOl.setText("Kay�t Ol");
+            lbl_kayitol.setText("Kay�t Ol");
+            dil.setText("EN");
+            i = 1;
+
+        } else if (i == 1) {
+            //Ingilizcesi buraya
+            lbl_Ad.setText("Name");
+            lbl_Soyad.setText("Surname");
+            lbl_kulAdi.setText("Nickname");
+            lbl_sifre.setText("Password");
+            lbl_sifreT.setText("Password again");
+            lbl_dil.setText("Language");
+            btn_kayitOl.setText("Register");
+            lbl_kayitol.setText("REG�STER");
+            dil.setText("DE");
+            i = 2;
+        } else if (i == 2) {
+            //Almancasi buraya
+            lbl_Ad.setText(Api.translate("en", "de", "Name"); lbl_Soyad.setText(Api.translate("en", "de", "Surname"); lbl_kulAdi.setText(Api.translate("en", "de", "Nickname"); lbl_sifre.setText(Api.translate("en", "de", "Password"); lbl_sifreT.setText(Api.translate("en", "de", "Password again"); lbl_dil.setText(Api.translate("en", "de", "Language"); btn_kayitOl.setText(Api.translate("en", "de", "Register"); lbl_kayitol.setText(Api.translate("en", "de", "REG�STER"); dil.setText("TR"); i = 0
+        }
+
+    }
+
+    @FXML void btn_kayitOl_Action(ActionEvent event) {
+
+        //anasayfaya acilsin(kullan�c� giri� sayfas� a��ls�n)
+        //kullanici giris sayfasi acilirken bu sayfa gizlensin.
+
+        //txt_Ad.getText().trim().isEmpty() -> bu calisirsa bunu yap
+        //txt_Ad.getText()=!null -> bunu da deneyebilirsin.
+
+        VeritabaniUtil veritabaniUtil = new VeritabaniUtil();
+        if (veritabaniUtil.dbInsert(txt_Ad.getText(), txt_Soyad.getText(), txt_kulAdi.getText(), txt_sifre.getText(), combo1.getSelectionModel().getSelectedItem())) {
+
+            System.out.println(true);
+
+            if (txt_sifre.getText().equals(txt_sifreTekrar.getText()) &&
+                    txt_sifreTekrar.getText().equals(txt_sifre.getText())) {
+
+                if (veritabaniUtil.dbInsert(txt_Ad.getText(), txt_Soyad.getText(), txt_kulAdi.getText(), txt_sifre.getText(), combo1.getSelectionModel().getSelectedItem())) {
+
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("projeSample.fxml"));
+                        AnchorPane pane2 = (AnchorPane) loader.load();
+                        ProjeControllerClassName nesne = loader.getController();
+                        Scene scene2 = new Scene(pane2);
+
+                        Stage stage2 = new Stage();
+                        stage2.setScene(scene2);
+                        stage2.show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    if (i == 0) {
+                        alert.setTitle("HATA");
+                        alert.setHeaderText("HATA MESAJI");
+                        alert.setContentText("Veritabanina ulasilamiyor");
+                    }
+                    if (i == 1) {
+                        Api.translate("tr", "en", "HATA");
+                        alert.setTitle(Api.translate("tr", "en", "HATA"));
+                        alert.setHeaderText(Api.translate("tr", "en", "HATA MESAJI"));
+                        alert.setContentText(Api.translate("tr", "en", "Veritaban�na Ula��lam�yor!"));
+                    }
+                    if (i == 2) {
+                        Api.translate("tr", "de", "HATA");
+                        alert.setTitle(Api.translate("tr", "de", "HATA"));
+                        alert.setHeaderText(Api.translate("tr", "de", "HATA MESAJI"));
+                        alert.setContentText(Api.translate("tr", "de", "Veritaban�na Ula��lam�yor!"));
+                    }
+
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(AlertType.INFORMATION);
+                if (i == 0) {
+                    alert.setTitle("HATA");
+                    alert.setHeaderText("HATA MESAJI");
+                    alert.setContentText("�ifreler Ayn� Olmal�d�r!");
+                }
+                if (i == 1) {
+                    Api.translate("tr", "en", "HATA");
+                    alert.setTitle(Api.translate("tr", "en", "HATA"));
+                    alert.setHeaderText(Api.translate("tr", "en", "HATA MESAJI"));
+                    alert.setContentText(Api.translate("tr", "en", "Sifreler ayni olmalidir."));
+                }
+                if (i == 2) {
+                    Api.translate("tr", "de", "HATA");
+                    alert.setTitle(Api.translate("tr", "de", "HATA"));
+                    alert.setHeaderText(Api.translate("tr", "de", "HATA MESAJI"));
+                    alert.setContentText(Api.translate("tr", "de", "Sifreler ayni olmalidir."));
+                }
+                alert.showAndWait();
+            }
+        } else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+
+            if (i == 0) {
+                alert.setTitle("HATA");
+                alert.setHeaderText("HATA MESAJI");
+                alert.setContentText("T�m Sat�rlar Doldurulmal�d�r!");
+            }
+            if (i == 1) {
+                Api.translate("tr", "en", "HATA");
+                alert.setTitle(Api.translate("tr", "en", "HATA"));
+                alert.setHeaderText(Api.translate("tr", "en", "HATA MESAJI"));
+                alert.setContentText(Api.translate("tr", "en", "T�m Sat�rlar Doldurulmal�d�r!"));
+            }
+            if (i == 2) {
+                Api.translate("tr", "de", "HATA");
+                alert.setTitle(Api.translate("tr", "de", "HATA"));
+                alert.setHeaderText(Api.translate("tr", "de", "HATA MESAJI"));
+                alert.setContentText(Api.translate("tr", "de", "T�m Sat�rlar Doldurulmal�d�r!"));
+            }
+
+            alert.showAndWait();
+        }
+    }
+
+    //Istersen silebilrsin
+    @FXML void combo1_Action(ActionEvent event) {
+
+    }
+
+    @FXML void initialize() {
+        //TODO:combobox degerleri buradan eklenecek.
+        combo1.getItems().addAll(
+                "TR",
+                "EN",
+                "DE"
+        );
+
+    }
+}
